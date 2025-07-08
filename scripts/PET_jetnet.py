@@ -7,7 +7,7 @@ import utils
 from tensorflow.keras.losses import mse, mae
 from tensorflow.keras.models import Model
 from PET import PET, FourierProjection, get_encoding
-#import horovod.tensorflow as hvd
+import horovod.tensorflow as hvd
 from layers import StochasticDepth,LayerScale
 from tqdm import tqdm
 
@@ -92,8 +92,6 @@ class PET_jetnet(keras.Model):
         self.model_part = keras.Model(inputs=[inputs_features,inputs_points,inputs_mask,
                                               inputs_jet,inputs_time,inputs_cond],
                                       outputs=outputs)
-        
-
                         
         outputs = self.Resnet(
             inputs_jet,
@@ -230,7 +228,7 @@ class PET_jetnet(keras.Model):
     def train_step(self, inputs):
         x,y = inputs
         batch_size = tf.shape(x['input_jet'])[0]
-
+        breakpoint()
         with tf.GradientTape(persistent=True) as tape:            
             t = tf.random.uniform((batch_size,1))                
             logsnr, alpha, sigma = self.get_logsnr_alpha_sigma(t)
@@ -531,7 +529,7 @@ class PET_jetnet(keras.Model):
         Returns: 
         Samples.
         """
-
+        breakpoint()
         batch_size = cond.shape[0]
         x = self.prior_sde(data_shape)
         if jet is not None:

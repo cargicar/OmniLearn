@@ -11,6 +11,7 @@ def process_and_save(folder_path, n_splits,name):
     all_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
     
     output_dir = os.path.join(folder_path, name)
+    
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -48,7 +49,8 @@ def process_and_save(folder_path, n_splits,name):
 if __name__=='__main__':
     parser = OptionParser(usage="%prog [opt]  inputFiles")
     parser.add_option("--sample", type="string", default='train', help="Input file name")
-    parser.add_option("--folder", type="string", default='/pscratch/sd/v/vmikuni/PET/JetClass', help="Folder containing downloaded files")
+    #parser.add_option("--folder", type="string", default='/pscratch/sd/v/vmikuni/PET/JetClass', help="Folder containing downloaded files")
+    parser.add_option("--folder", type="string", default='../datasets/JetClass', help="Folder containing downloaded files")
 
     (flags, args) = parser.parse_args()
     

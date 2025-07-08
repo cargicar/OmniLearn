@@ -75,7 +75,7 @@ class SimpleHeadAttention(layers.Layer):
         # Project the inputs all at once.
         qkv = self.qkv(x)
 
-
+        breakpoint()  # Debugging breakpoint, can be removed later.
         # Reshape the projected output so that they're segregated in terms of
         # query, key, and value projections.
         qkv = tf.reshape(qkv, (B, N, 3, self.num_heads, C // self.num_heads))

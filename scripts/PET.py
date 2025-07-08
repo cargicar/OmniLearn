@@ -54,8 +54,6 @@ class PET(keras.Model):
         input_jet = layers.Input((num_jet),name='input_jet')
         input_label = layers.Input((num_classes),name='input_label')
         input_time = layers.Input((1),name = 'input_time')
-
-
         outputs_body = self.PET_body(input_features,
                                      input_points,
                                      input_mask,
@@ -136,6 +134,7 @@ class PET(keras.Model):
     def train_step(self, inputs):
         x,y = inputs
         batch_size = tf.shape(x['input_jet'])[0]
+        
         x['input_time'] = tf.zeros((batch_size,1))
         with tf.GradientTape(persistent=True) as tape:
             loss = 0.0            
@@ -311,8 +310,6 @@ class PET(keras.Model):
                  ):
 
 
-
-        
         #Randomly drop features not present in other datasets
         encoded  = RandomDrop(self.feature_drop if  'all' in self.mode else 0.0,num_skip=self.num_keep)(input_features)                        
         encoded = get_encoding(encoded,self.projection_dim)
@@ -323,20 +320,19 @@ class PET(keras.Model):
         scale,shift = tf.split(time,2,-1)
         
         encoded = encoded*(1.0+scale) + shift
-
-        
+        # encoded:bx(proj_dim = 128)        
         if local:
             coord_shift = tf.multiply(999., tf.cast(tf.equal(input_mask, 0), dtype='float32'))        
             points = input_points[:,:,:2]
-            local_features = input_features
+            local_features = input_features #bx19
             for _ in range(num_local):
                 local_features = get_neighbors(coord_shift+points,local_features,self.projection_dim,K)
-                points = local_features
+                points = local_features #bx128
                 
             encoded = layers.Add()([local_features,encoded])
 
         skip_connection = encoded
-        for i in range(self.num_layers):
+        for i in range(self.num_layers): #self.num_layers = 8
             x1 = layers.GroupNormalization(groups=1)(encoded)
             if talking_head:
                 updates, _ = TalkingHeadAttention(self.projection_dim, self.num_heads, 0.0)(x1)
@@ -378,7 +374,7 @@ class PET(keras.Model):
             num_jet,
             simple = False
     ):
-
+        
         #Include event information as a representative particle
         if simple:
             encoded = layers.GroupNormalization(groups=1)(encoded)

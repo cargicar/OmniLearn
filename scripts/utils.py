@@ -126,7 +126,16 @@ class DataLoader:
 
     def load_data(self,path, batch_size=512,rank=0,size=1,nevts=None):
         # self.path = path
-
+        """
+        Following JetClass literature: 
+        - x_particles, x_jets, y
+        - `x_particles`: a zero-padded array of particle-level features 
+                         in the shape `(num_jets, num_particle_features, max_num_particles)`.
+        - `x_jets`: a numpy array of jet-level features
+                    in the shape `(num_jets, num_jet_features)`.
+        - `y`: a one-hot encoded numpy array of the truth lables
+               in the shape `(num_jets, num_classes)`.
+        """
         self.X = h5.File(self.path,'r')['data'][rank:nevts:size]
         self.y = h5.File(self.path,'r')['pid'][rank:nevts:size]
         self.jet = h5.File(self.path,'r')['jet'][rank:nevts:size]
@@ -136,7 +145,7 @@ class DataLoader:
         self.nevts = h5.File(self.path,'r')['data'].shape[0] if nevts is None else nevts
         self.num_part = self.X.shape[1]
         self.num_jet = self.jet.shape[1]
-
+        
 
     def preprocess(self,x,mask):                
         num_feat = x.shape[-1]

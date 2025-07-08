@@ -22,6 +22,12 @@ The list of packages needed to train/evaluate the model is found in the ```requi
 
 Our **recommendation** is to use the docker container.
 
+Use as  docker run -it  -v /path/on/host:/path/in/container vmikuni/tensorflow:ngc-23.12-tf2-v1 bash
+
+Explicilty
+
+docker run -it  -v /home/carlos/Rnet_local/diffusion_study/omnilearn_study/Omnilearn_cargicar:/workspace/omnilearn vmikuni/tensorflow:ngc-23.12-tf2-v1 bash
+
 # Data
 
 Use the flag ```--folder''' with the path of the downloaded data to  preprocess each file. See below for specific file instructions.
